@@ -13,6 +13,10 @@ J = 0;
 % Instructions: Compute the cost of a particular choice of theta
 %               You should set J to the cost.
 
+hypothesis = theta' * X';
+msr = 1/m * sum((hypothesis' - y).^2);
+
+J = 1/2 * msr;
 
 
 

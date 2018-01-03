@@ -1,4 +1,4 @@
-%% Machine Learning Online Class
+%]% Machine Learning Online Class
 %  Exercise 1: Linear regression with multiple variables
 %
 %  Instructions
@@ -101,13 +101,57 @@ fprintf(' %f \n', theta);
 fprintf('\n');
 
 % Estimate the price of a 1650 sq-ft, 3 br house
-% ====================== YOUR CODE HERE ======================
 % Recall that the first column of X is all-ones. Thus, it does
 % not need to be normalized.
 price = 0; % You should change this
 
+alpha = 0.01;
+num_iters = 50;
+J_histories = zeros(1,num_iters);
+thetas = zeros(1,length(theta));
+
+alpha_iteration = 1;
+alpha_range = alpha-(0.01*1):0.01:(alpha+0.1)
+
+for new_alpha = alpha_range
+    fprintf('alpha: %d \n', new_alpha);
+    
+    % Init Theta and Run Gradient Descent 
+    theta = zeros(3, 1);
+    [theta, J_history] = gradientDescentMulti(X, y, theta, new_alpha, num_iters);
+
+    J_histories(alpha_iteration, :) = J_history';
+    thetas(alpha_iteration, :) = theta';
+
+    alpha_iteration++;
+      
+end
+
+% Plot the convergence graph
+colors = [0.8 0.2 0.2];
+figure;
+plot(1:numel(J_histories(1,:)), J_histories(1,:), '-', 'color', colors, 'LineWidth', 2);
+hold on;
+
+for alpha_version = 2:size(J_histories,1)
+    colors(1,2) += 0.05;
+    plot(1:numel(J_histories(alpha_version,:)), J_histories(alpha_version,:), '-', 'color', colors, 'LineWidth', 2);
+end
+xlabel('Number of iterations');
+ylabel('Cost J');
+legend(  strsplit(num2str(alpha_range, 'alpha:%d ')), ' ')
+
+% Display gradient descent's result
+fprintf('Thetas computed from gradient descent: \n');
+%fprintf(' %f \n', thetas');
+thetas
+fprintf('\n');
 
 % ============================================================
+
+new_features = [1650, 3]
+normalized_new_features = ( (new_features - mu) ./ sigma ) 
+price = [1 , normalized_new_features] * thetas(end, :)' 
 
 fprintf(['Predicted price of a 1650 sq-ft, 3 br house ' ...
          '(using gradient descent):\n $%f\n'], price);
@@ -150,6 +194,8 @@ fprintf('\n');
 % Estimate the price of a 1650 sq-ft, 3 br house
 % ====================== YOUR CODE HERE ======================
 price = 0; % You should change this
+
+price = [1, new_features] * theta'
 
 
 % ============================================================
